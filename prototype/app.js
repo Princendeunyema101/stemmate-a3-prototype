@@ -3,7 +3,7 @@
      WF1  Find and save an activity for offline use (incl. no-results, offline, storage-full, interrupted-download recovery)
      WF2  Build a session plan offline with automatic draft saving and validation
      WF3  Queue, synchronise, fail, retry and resolve a version conflict (incl. failure after merged upload)
-   Persistence: localStorage, partitioned per synthetic facilitator profile (shared-device separation).
+   Persistence: Web Storage (in-memory fallback), partitioned per synthetic facilitator profile (shared-device separation).
    The "Evaluator test controls" simulate network and device conditions for testing. */
 (function () {
   "use strict";
@@ -26,14 +26,26 @@
     merge: '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6 3v6a6 6 0 0 0 6 6h0a6 6 0 0 1 6 6M18 3v4" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>'
   };
 
+  /* ---------- Storage adapter ----------
+     Uses the browser's persistent Web Storage when available (e.g. GitHub Pages hosting),
+     and falls back to in-memory storage when a sandboxed preview blocks it. */
+  function memStore() { var m = {}; return { getItem: function (k) { return k in m ? m[k] : null; }, setItem: function (k, v) { m[k] = String(v); }, removeItem: function (k) { delete m[k]; }, keys: function () { return Object.keys(m); }, clear: function () { m = {}; } }; }
+  function webStore(name) {
+    try { var s = window[name]; s.setItem("__t", "1"); s.removeItem("__t");
+      return { getItem: function (k) { return s.getItem(k); }, setItem: function (k, v) { s.setItem(k, v); }, removeItem: function (k) { s.removeItem(k); }, keys: function () { return Object.keys(s); }, clear: function () { s.clear(); } };
+    } catch (e) { return memStore(); }
+  }
+  var PERSIST = webStore("localStorage"), SESSION = webStore("sessionStorage");
+  var persistent = !!(function () { try { return window.localStorage && PERSIST.keys && window.localStorage.length >= 0; } catch (e) { return null; } })();
+
   /* ---------- Storage helpers ---------- */
-  function load(key, fallback) { try { var v = localStorage.getItem(APP_KEY + "." + key); return v ? JSON.parse(v) : fallback; } catch (e) { return fallback; } }
-  function save(key, value) { localStorage.setItem(APP_KEY + "." + key, JSON.stringify(value)); }
+  function load(key, fallback) { try { var v = PERSIST.getItem(APP_KEY + "." + key); return v ? JSON.parse(v) : fallback; } catch (e) { return fallback; } }
+  function save(key, value) { PERSIST.setItem(APP_KEY + "." + key, JSON.stringify(value)); }
 
   var harness = load("harness", { network: "online", storageFull: false, conflictNext: false, failNextUpload: false });
   var prefs = load("prefs", { textScale: 1, dataSaver: false });
   var session = null;
-  try { session = JSON.parse(sessionStorage.getItem(APP_KEY + ".session") || "null"); } catch (e) { session = null; }
+  try { session = JSON.parse(SESSION.getItem(APP_KEY + ".session") || "null"); } catch (e) { session = null; }
   var pinFails = 0, lockUntil = 0;
   var findState = { q: "", level: "", topic: "", maxMin: "", materials: [] };
   var downloads = {};   // activityId -> {pct, timer, state, message}
@@ -172,8 +184,8 @@
     document.getElementById("h-failnext").onchange = function (e) { harness.failNextUpload = e.target.checked; save("harness", harness); announce("Fail next upload " + (e.target.checked ? "on" : "off") + "."); };
     document.getElementById("h-reset").onclick = function () {
       if (!confirm("Reset all demo data for both synthetic profiles?")) return;
-      Object.keys(localStorage).forEach(function (k) { if (k.indexOf(APP_KEY) === 0) localStorage.removeItem(k); });
-      sessionStorage.clear(); location.hash = "#/signin"; location.reload();
+      PERSIST.keys().forEach(function (k) { if (k.indexOf(APP_KEY) === 0) PERSIST.removeItem(k); });
+      SESSION.clear(); session = null; location.hash = "#/signin"; if (persistent) location.reload(); else render();
     };
   }
   function afterNetChange(wasOnline) {
@@ -216,7 +228,7 @@
         return;
       }
       pinFails = 0;
-      session = { profileId: pid }; sessionStorage.setItem(APP_KEY + ".session", JSON.stringify(session));
+      session = { profileId: pid }; SESSION.setItem(APP_KEY + ".session", JSON.stringify(session));
       announce("Signed in as " + p.label + ".");
       location.hash = "#/home";
       function showErr(msg) {
@@ -228,7 +240,7 @@
   };
   function signOut() {
     Object.keys(retryTimers).forEach(function (k) { clearTimeout(retryTimers[k]); });
-    session = null; sessionStorage.removeItem(APP_KEY + ".session");
+    session = null; SESSION.removeItem(APP_KEY + ".session");
     announce("Signed out. This profile is locked.");
     location.hash = "#/signin";
   }
