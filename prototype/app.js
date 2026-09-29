@@ -114,8 +114,13 @@
     main.innerHTML = fn(r);
     if (fn.after) fn.after(r);
     document.title = (TITLES[r.name] || "Not found") + " - STEMMate Namibia prototype";
-    if (!opts.keepFocus) { var h1 = main.querySelector("h1"); if (h1) { h1.setAttribute("tabindex", "-1"); h1.focus(); } }
+    /* v1.1 fix A11Y-02: do not move focus on the very first page load, so the first Tab reaches "Skip to main content" (SC 2.4.1, 2.4.3).
+       On later route changes focus moves to the new page heading so screen-reader and keyboard users know the view changed. */
+    var h1 = main.querySelector("h1"); if (h1) h1.setAttribute("tabindex", "-1");
+    if (!opts.keepFocus && !firstRender && h1) h1.focus();
+    firstRender = false;
   }
+  var firstRender = true;
 
   function renderHeader() {
     var st = document.getElementById("header-status");

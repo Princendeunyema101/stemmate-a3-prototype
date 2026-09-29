@@ -45,7 +45,8 @@ p { margin: 0 0 var(--space-3); max-width: 70ch; }
 
 :focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; border-radius: 2px; }
 main:focus, h1:focus { outline: none; }
-h1:focus-visible { outline: 3px solid var(--focus); outline-offset: 4px; }
+/* v1.1 fix A11Y-03: headings receive programmatic focus only; no heavy ring on non-interactive text. */
+h1[tabindex="-1"]:focus-visible { outline: 2px dashed var(--border-strong); outline-offset: 4px; }
 
 .visually-hidden {
   position: absolute !important; width: 1px; height: 1px; padding: 0; margin: -1px;
@@ -157,7 +158,8 @@ fieldset { border: 1px solid var(--border); border-radius: var(--radius); paddin
 .notice.err { color: var(--err); background: var(--err-bg); }
 .notice.info { color: var(--info); background: var(--info-bg); }
 .notice p, .notice li { color: var(--text); }
-.notice a { color: var(--text); font-weight: 600; }
+.notice a:not(.btn) { color: var(--text); font-weight: 600; }
+/* v1.1 fix A11Y-01: button-styled links inside notices kept white-on-teal (axe color-contrast, SC 1.4.3). */
 .error-summary ul { margin: 0; padding-left: 1.2rem; }
 
 /* Progress */

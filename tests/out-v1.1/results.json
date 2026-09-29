@@ -1,0 +1,232 @@
+{
+ "axe": [
+  {
+   "screen": "S01 Sign in",
+   "violations": [],
+   "passes": 44
+  },
+  {
+   "screen": "S01b Sign in error",
+   "violations": [],
+   "passes": 44
+  },
+  {
+   "screen": "S02 Home",
+   "violations": [],
+   "passes": 44
+  },
+  {
+   "screen": "S03 Find",
+   "violations": [],
+   "passes": 47
+  },
+  {
+   "screen": "S03b Find no results",
+   "violations": [],
+   "passes": 47
+  },
+  {
+   "screen": "S04 Activity detail",
+   "violations": [],
+   "passes": 42
+  },
+  {
+   "screen": "S04b Save failed storage",
+   "violations": [],
+   "passes": 45
+  },
+  {
+   "screen": "S04d Saved",
+   "violations": [],
+   "passes": 45
+  },
+  {
+   "screen": "S05 Saved",
+   "violations": [],
+   "passes": 49
+  },
+  {
+   "screen": "S06 Plan editor",
+   "violations": [],
+   "passes": 46
+  },
+  {
+   "screen": "S06b Plan validation errors",
+   "violations": [],
+   "passes": 46
+  },
+  {
+   "screen": "S07 Outbox queued offline",
+   "violations": [],
+   "passes": 44
+  },
+  {
+   "screen": "S07b Outbox conflict",
+   "violations": [],
+   "passes": 44
+  },
+  {
+   "screen": "S08 Conflict review",
+   "violations": [],
+   "passes": 49
+  },
+  {
+   "screen": "S08b Conflict validation",
+   "violations": [],
+   "passes": 49
+  },
+  {
+   "screen": "S07c Outbox failed",
+   "violations": [],
+   "passes": 44
+  },
+  {
+   "screen": "S09 Plans list",
+   "violations": [],
+   "passes": 49
+  },
+  {
+   "screen": "S10 Device",
+   "violations": [],
+   "passes": 46
+  },
+  {
+   "screen": "S11 Help",
+   "violations": [],
+   "passes": 44
+  }
+ ],
+ "steps": [
+  "Wrong PIN error: That PIN is not correct for Facilitator A (synthetic profile). 4 attempts left before a short pause.",
+  "Signed in; focus on: H1 Good day. What would you like to prepare?",
+  "No-results text: No activities match your filters. | result links present: 0",
+  "After clear: 10 activities match your filters.",
+  "Storage full error: Not enough space on this deviceThis activity needs 1.4 MB but only 0 KB is free. Remove a saved activity you no longer need, then select Retry save.Retry saveFree up spaceKeep browsing",
+  "Focus after error: Retry save",
+  "Retry save -> Saved on this device on Sep 29 12:09 PM. It works without a connection.Plan a session with",
+  "Unstable: Download interrupted at 60%",
+  "ACT-03 saved after retry",
+  "Offline unsaved guide: Full guide not on this device",
+  "Autosave: Draft saved on this device at 12:09 PM",
+  "Error summary: There are 3 problems to fix | focus=err-box",
+  "Error link focus -> p-title",
+  "Move down focus -> Move step 2 down",
+  "Autosave storage full: Draft not saved: device storage is full. Your changes are still on screen. Retry saving draft",
+  "Retry draft: Draft saved on this device at 12:09 PM",
+  "Queued offline: Queued: waiting for connection",
+  "Reconnect -> conflict",
+  "Merge validation: Choose a version for each difference",
+  "Failure after merged upload shown: Grade 8 pressure lessonUpload failed: safe on this deviceAutomatic retry at about 12:09 PM (attempt 1 of 5).Retry nowHistory for this planSep 29 12:09 PM - Upload failed: connection lost. Plan kept on this device with yo",
+  "Retry now -> Synced",
+  "Volunteer B sees plans: false"
+ ],
+ "reflow": [
+  {
+   "route": "home",
+   "width": 320,
+   "textScale": 1,
+   "horizontalScroll": false,
+   "sw": 320,
+   "cw": 320
+  },
+  {
+   "route": "find",
+   "width": 320,
+   "textScale": 1,
+   "horizontalScroll": false,
+   "sw": 320,
+   "cw": 320
+  },
+  {
+   "route": "activity/ACT-01",
+   "width": 320,
+   "textScale": 1,
+   "horizontalScroll": false,
+   "sw": 320,
+   "cw": 320
+  },
+  {
+   "route": "plan/new?act=ACT-01",
+   "width": 320,
+   "textScale": 1,
+   "horizontalScroll": false,
+   "sw": 320,
+   "cw": 320
+  },
+  {
+   "route": "outbox",
+   "width": 320,
+   "textScale": 1,
+   "horizontalScroll": false,
+   "sw": 320,
+   "cw": 320
+  },
+  {
+   "route": "device",
+   "width": 320,
+   "textScale": 1,
+   "horizontalScroll": false,
+   "sw": 320,
+   "cw": 320
+  },
+  {
+   "route": "home",
+   "width": 1280,
+   "textScale": 1.5,
+   "horizontalScroll": false,
+   "sw": 1280,
+   "cw": 1280
+  },
+  {
+   "route": "find",
+   "width": 1280,
+   "textScale": 1.5,
+   "horizontalScroll": false,
+   "sw": 1280,
+   "cw": 1280
+  },
+  {
+   "route": "activity/ACT-01",
+   "width": 1280,
+   "textScale": 1.5,
+   "horizontalScroll": false,
+   "sw": 1280,
+   "cw": 1280
+  },
+  {
+   "route": "plan/new?act=ACT-01",
+   "width": 1280,
+   "textScale": 1.5,
+   "horizontalScroll": false,
+   "sw": 1280,
+   "cw": 1280
+  },
+  {
+   "route": "outbox",
+   "width": 1280,
+   "textScale": 1.5,
+   "horizontalScroll": false,
+   "sw": 1280,
+   "cw": 1280
+  },
+  {
+   "route": "device",
+   "width": 1280,
+   "textScale": 1.5,
+   "horizontalScroll": false,
+   "sw": 1280,
+   "cw": 1280
+  }
+ ],
+ "tabOrder": [
+  "A Skip to main content",
+  "A STEMMate Namibia",
+  "INPUT fac-a",
+  "INPUT pin",
+  "INPUT on",
+  "BUTTON Sign in",
+  "SUMMARY Evaluator test controls (simulation only)",
+  "A Help and keyboard tips",
+  "BODY Skip to main content\nSTEMMate Namibia\nOnline\nSign in on this shar"
+ ]
+}

@@ -3,7 +3,7 @@
    created for demonstration and classroom testing. No real person, school or
    learner is described. */
 window.STEM_DATA = {
-  version: "v1.0.0 (A3 prototype, 2026-09-29)",
+  version: "v1.1.0 (A3 prototype, 2026-09-29)",
   storageLimitKB: 6000, // simulated device quota for offline content
   profiles: [
     { id: "fac-a", label: "Facilitator A (synthetic profile)", role: "Facilitator", pin: "1234" },
