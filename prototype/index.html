@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>STEMMate Namibia - Prototype</title>
+  <meta name="description" content="STEMMate Namibia accessible offline-first prototype for adult STEM facilitators (SDN621S A3). Synthetic data only.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230B5D6B'/%3E%3Cpath d='M6 24 L16 8 L26 24 Z' fill='none' stroke='white' stroke-width='3' stroke-linejoin='round'/%3E%3Ccircle cx='16' cy='19' r='2.5' fill='white'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="app.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to main content</a>
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="brand" href="#/home" aria-label="STEMMate Namibia, home">
+        <svg class="logo" viewBox="0 0 32 32" width="32" height="32" aria-hidden="true" focusable="false">
+          <rect width="32" height="32" rx="6" fill="currentColor"/>
+          <path d="M6 24 L16 8 L26 24 Z" fill="none" stroke="#fff" stroke-width="3" stroke-linejoin="round"/>
+          <circle cx="16" cy="19" r="2.5" fill="#fff"/>
+        </svg>
+        <span class="brand-text">STEMMate <span class="brand-sub">Namibia</span></span>
+      </a>
+      <div class="header-status" id="header-status"></div>
+      <div class="header-actions" id="header-actions"></div>
+    </div>
+    <nav class="main-nav" id="main-nav" aria-label="Main"></nav>
+  </header>
+
+  <main id="main" tabindex="-1"></main>
+
+  <div id="announcer" class="visually-hidden" role="status" aria-live="polite"></div>
+  <div id="alerter" class="visually-hidden" role="alert"></div>
+
+  <footer class="site-footer">
+    <details class="harness" id="harness">
+      <summary>Evaluator test controls (simulation only)</summary>
+      <div class="harness-body" id="harness-body"></div>
+    </details>
+    <p class="footer-meta">Prototype <span id="version"></span>. All content is synthetic and fictional. No learner data is collected.
+      <a href="#/help">Help and keyboard tips</a></p>
+  </footer>
+
+  <script src="data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
