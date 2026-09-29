@@ -7,7 +7,7 @@
   --text: #1c1a17;
   --muted: #4f4a43;
   --border: rgba(28, 26, 23, 0.18);
-  --border-strong: rgba(28, 26, 23, 0.45);
+  --border-strong: #6b6660; /* v1.1 fix A11Y-04: was rgba(28,26,23,.45) = 2.85:1 on white, below SC 1.4.11 3:1 */
   --accent: #0b5d6b;
   --accent-hover: #084955;
   --accent-ink: #ffffff;
