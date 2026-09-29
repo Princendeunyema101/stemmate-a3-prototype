@@ -1,0 +1,57 @@
+@startuml seq-plan-sync
+!pragma teoz true
+title Consolidated sequence - plan, queue, sync, conflict and failed merged upload (FR-03 to FR-05)
+skinparam defaultFontName Arial
+actor Facilitator
+participant "PlanEditorView\n(S06/S07/S08)" as UI
+participant AccessGuard
+participant SessionPlanService
+participant SessionPlanRepository
+participant SyncQueue
+participant ConnectivityMonitor
+participant SyncCoordinator
+participant ConflictResolver
+participant RemoteSyncGateway
+Facilitator -> UI : edit step / materials
+UI -> AccessGuard : canEdit(profileId, planId)
+AccessGuard --> UI : allowed
+UI -> SessionPlanService : autoSaveDraft(plan)
+SessionPlanService -> SessionPlanRepository : save(plan)
+alt storage available
+  SessionPlanRepository --> SessionPlanService : Saved(localVersion)
+  SessionPlanService --> UI : "Draft saved on this device"
+else storage full
+  SessionPlanRepository --> SessionPlanService : StorageFull
+  SessionPlanService --> UI : "Draft not saved" + retrySaveDraft()
+end
+Facilitator -> UI : Mark ready and queue
+UI -> SessionPlanService : markReady(plan)
+SessionPlanService -> SessionPlanService : validate(plan) incl. PII guard
+SessionPlanService -> SyncQueue : enqueue(SyncQueueItem{plan, steps, materials, requestId})
+ConnectivityMonitor -> SyncCoordinator : onConnectivityRestored()
+SyncCoordinator -> SyncQueue : peekBatch()
+SyncCoordinator -> RemoteSyncGateway : pushPlan(item)
+alt 200 synced
+  RemoteSyncGateway --> SyncCoordinator : Synced(serverVersion)
+  SyncCoordinator -> SyncQueue : markSynced(item)
+else 409 conflict
+  RemoteSyncGateway --> SyncCoordinator : Conflict(serverCopy)
+  SyncCoordinator -> UI : showConflict(local, server)
+  Facilitator -> UI : choose per difference
+  UI -> ConflictResolver : merge(local, server, choices)
+  ConflictResolver --> UI : mergedPlan
+  UI -> SessionPlanRepository : save(mergedPlan)
+  note right : merged copy is persisted\nBEFORE any upload
+  SyncCoordinator -> RemoteSyncGateway : pushPlan(mergedItem)
+  alt merged upload fails (503 / timeout)
+    RemoteSyncGateway --> SyncCoordinator : NetworkError
+    SyncCoordinator -> SyncQueue : markFailed(item, nextRetry)
+    SyncCoordinator -> UI : "Upload failed: safe on this device" + Retry now
+  else merged upload ok
+    RemoteSyncGateway --> SyncCoordinator : Synced(serverVersion+1)
+  end
+else 503 / timeout
+  RemoteSyncGateway --> SyncCoordinator : NetworkError
+  SyncCoordinator -> SyncQueue : markFailed(item, backoff)
+end
+@enduml

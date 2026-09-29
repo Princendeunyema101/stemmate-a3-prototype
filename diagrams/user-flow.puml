@@ -1,0 +1,81 @@
+@startuml user-flow
+title STEMMate A3 prototype v1.1 - annotated user flow (WF1, WF2, WF3)
+skinparam defaultFontName Arial
+skinparam ActivityBackgroundColor #FFFFFF
+skinparam ActivityBorderColor #0B5D6B
+skinparam noteBackgroundColor #FBEED9
+start
+:S01 Sign in on shared device\n(choose profile + 4-digit PIN);
+note right: SR-01 local access check\nwrong PIN -> text error, 5 tries -> 30 s pause\nAR-01: paste allowed (SC 3.3.8)
+:S02 Home (status: Online / Offline shown as icon + text);
+partition "WF1 Find and save an activity offline (FR-01, FR-02)" {
+  :S03 Find activities\n(level, topic, max time, materials, words);
+  if (Any activity matches?) then (no)
+    :S03b "No matching activities"\nremove-one-filter buttons + Clear all;
+    note right: Fix from A2 feedback:\nno result card is rendered,\nso a missing activity cannot be selected
+    :Adjust filters;
+    stop
+  else (yes)
+  endif
+  :S04 Activity detail\n(size shown before download, image + text alternative);
+  :Select "Save for offline use";
+  repeat
+    if (Online?) then (no)
+      :S04 error "Cannot save while offline";
+    elseif (Enough device space?) then (no)
+      :S04b error "Not enough space"\n+ Free up space link;
+    else (yes)
+      :S04c progress bar (20% steps);
+      if (Connection held?) then (no)
+        :S04e "Download interrupted"\npartial files discarded;
+      else (yes)
+        :S04d "Saved on this device";
+        break
+      endif
+    endif
+  repeat while (Retry save) is (re-enters the same save routine)
+  note right: Fix from A2 feedback:\nRetry is connected back to saving
+}
+partition "WF2 Build a session plan offline (FR-03, FR-04, PR-01)" {
+  :S06 Plan editor pre-filled from saved activity\nsteps + minutes, materials checklist, safety, inclusion, learner count;
+  :Edit (autosave 0.7 s after each change);
+  if (Draft written to device?) then (no: storage full)
+    :S06c "Draft not saved: storage full"\nchanges kept on screen + Retry saving draft;
+  else (yes)
+    :"Draft saved on this device at hh:mm";
+  endif
+  :Select "Mark ready and queue for sync";
+  if (Valid?) then (no)
+    :S06b error summary (focused)\nlinks to each field, inline messages;
+    note right: includes privacy guard:\nemails / phone numbers blocked
+    stop
+  else (yes)
+    :Plan status = Queued;
+  endif
+}
+partition "WF3 Sync, failure and recovery (FR-05, QR-02)" {
+  :S07 Sync outbox;
+  if (Online?) then (no)
+    :"Queued: waiting for connection";
+    :Connection returns (auto sync);
+  endif
+  :Upload attempt;
+  if (Result) then (network failure)
+    :S07c "Upload failed: safe on this device"\nauto retry after 20 s, max 5, Retry now;
+  elseif (server has newer version) then (conflict)
+    :S08 Review conflict\nper-difference choice (mine / server);
+    if (All choices made?) then (no)
+      :S08b error "Choose a version for each difference";
+    endif
+    :Merged plan saved on device FIRST, then uploaded;
+    if (Merged upload ok?) then (no)
+      :S07c failure after merged upload\nmerged copy kept + Retry now;
+      note right: Fix from A2 feedback:\nfailure after merged-plan upload shown
+    endif
+  else (ok)
+  endif
+  :S07d "Synced" + history log;
+}
+:S10 Sign out and lock (another profile cannot see plans);
+stop
+@enduml

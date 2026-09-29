@@ -1,0 +1,79 @@
+@startuml class-baseline
+!pragma layout smetana
+title Consolidated design baseline (names used in prototype, sequences and contract)
+skinparam defaultFontName Arial
+skinparam classAttributeIconSize 0
+class SessionPlan {
+  +id: UUID
+  +title: String
+  +sessionDate: Date
+  +activityId: String
+  +expectedLearners: Int [0..1]
+  +safetyNotes: String
+  +inclusionPrompts: String
+  +status: PlanStatus
+  +localVersion: Int
+  +baseServerVersion: Int
+}
+class PlanStep {
+  +order: Int
+  +text: String
+  +minutes: Int
+}
+class PlanMaterial {
+  +name: String
+  +have: Boolean
+}
+class SyncQueueItem {
+  +requestId: UUID
+  +attempts: Int
+  +nextRetry: DateTime
+}
+enum PlanStatus {
+  DRAFT
+  QUEUED
+  SYNCING
+  SYNCED
+  FAILED
+  CONFLICT
+}
+interface SessionPlanRepository {
+  +save(plan): SaveResult
+  +findById(id): SessionPlan
+}
+interface RemoteSyncGateway {
+  +pushPlan(item): SyncResult
+}
+class SessionPlanService {
+  +autoSaveDraft(plan)
+  +markReady(plan)
+  +validate(plan): Error[]
+}
+class SyncCoordinator {
+  +onConnectivityRestored()
+  +syncOne(id)
+  +retry(id)
+}
+class ConflictResolver {
+  +merge(local, server, choices): SessionPlan
+}
+class AccessGuard {
+  +signIn(profileId, pin)
+  +canEdit(profileId, planId): Boolean
+  +signOutAndLock()
+}
+class ConnectivityMonitor {
+  +subscribe(observer)
+}
+SessionPlan "1" *-- "1..*" PlanStep
+SessionPlan "1" *-- "0..*" PlanMaterial
+SessionPlan --> PlanStatus
+SyncQueueItem "0..1" --> "1" SessionPlan
+SessionPlanService ..> SessionPlanRepository
+SessionPlanService ..> AccessGuard
+SyncCoordinator ..> RemoteSyncGateway
+SyncCoordinator ..> ConflictResolver
+SyncCoordinator ..> SyncQueueItem
+ConnectivityMonitor ..> SyncCoordinator : notifies
+note bottom of PlanMaterial : Added after A2 feedback:\nplan materials are in the model\nand in the sync payload
+@enduml

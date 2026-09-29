@@ -1,0 +1,74 @@
+[
+ [
+  "Body text on page",
+  "#1c1a17",
+  "#f6f3ec",
+  15.67
+ ],
+ [
+  "Muted text on page",
+  "#4f4a43",
+  "#f6f3ec",
+  7.92
+ ],
+ [
+  "Muted text on card",
+  "#4f4a43",
+  "#ffffff",
+  8.78
+ ],
+ [
+  "Button text on teal",
+  "#ffffff",
+  "#0b5d6b",
+  7.52
+ ],
+ [
+  "Link teal on page",
+  "#0b5d6b",
+  "#f6f3ec",
+  6.79
+ ],
+ [
+  "OK status text",
+  "#1d6634",
+  "#e5f2e8",
+  6.06
+ ],
+ [
+  "Warning status text",
+  "#7a4300",
+  "#fbeed9",
+  6.97
+ ],
+ [
+  "Error status text",
+  "#a0241a",
+  "#fbe7e4",
+  6.39
+ ],
+ [
+  "Info status text",
+  "#0b4a85",
+  "#e3eef9",
+  7.66
+ ],
+ [
+  "Focus ring vs page (non-text 3:1)",
+  "#0a3d91",
+  "#f6f3ec",
+  9.07
+ ],
+ [
+  "Input border vs white, v1.0 (non-text 3:1)",
+  "#999897",
+  "#ffffff",
+  2.88
+ ],
+ [
+  "Input border vs white, v1.1 (non-text 3:1)",
+  "#6b6660",
+  "#ffffff",
+  5.68
+ ]
+]
